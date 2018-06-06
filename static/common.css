@@ -1,0 +1,87 @@
+body>div { margin: 1rem 0; }
+body>div>h1 { margin: 2rem 0; }
+body>div>h1 button { margin-left:1rem; }
+
+.list-group-flush dt.list-group-item {
+	padding-bottom: 0;
+	font-family: 'Roboto Condensed', sans-serif;
+    font-size: 1.4rem;
+}
+
+.list-group-flush .list-group-item {
+	padding-left: 0;
+	padding-right: 0;
+	border: 0;
+}
+
+.row-controls {
+	margin-top: 1.6rem;
+	margin-bottom: 1.6rem;
+}
+
+h1, h2, h3, h4, h5 {
+	font-family: 'Roboto Condensed', sans-serif;
+}
+
+h1 { font-size: 3rem; }
+
+.description { margin: 0 0 2rem 0; }
+
+.row-graph {
+	border-top: 1px solid #eee;
+	padding: 2rem 0;
+}
+
+.row-graph-empty h4 {
+	opacity: .4;
+}
+
+.row-graph-empty p {
+	font-size: 1.6rem;
+	padding-left: 10px; /* Выравниваем с title в графике */
+	color: #777;
+}
+
+.row-graph-empty p b {
+	color: #000;
+	font-weight: normal;
+}
+
+.row-graph code {
+	color: green;
+	display: block;
+	margin-top: 2rem;
+}
+
+input.has-error {
+	border-color: #c00;
+}
+
+.graph-toolbar {
+	margin-top: 2rem;
+	text-align: right;
+}
+
+.row-graph-empty .graph-toolbar {
+	margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+	.row-graph-empty code {
+		margin-top: 0rem;
+	}
+}
+
+.graph-toolbar i {
+	margin-left: .4em;
+	cursor: pointer;
+}
+
+.graph-toolbar .fa-trash-alt {
+	color: #c00;
+	opacity: .6;
+}
+
+.graph-toolbar .fa-trash-alt:hover, .graph-toolbar .fa-trash-alt:active {
+	opacity: 1;
+}

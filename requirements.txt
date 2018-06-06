@@ -1,0 +1,6 @@
+mako
+CherryPy
+mysqlclient
+bcrypt
+sqlalchemy
+requests
