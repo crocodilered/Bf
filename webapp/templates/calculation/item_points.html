@@ -14,7 +14,7 @@
 		<%def name="graph_left_col(g)">
 			<code class="d-none d-md-block">${g.params}</code>
 			<div class="graph-toolbar">
-				<i data-toggle="modal" data-target="#modal-delete" data-graph="${g.id}" class="fas fa-trash-alt fa-2x"></i>
+				<i data-toggle="modal" data-target="#modal-delete" data-graph="${g.id}" class="fas fa-trash fa-2x"></i>
 			</div>
 		</%def>
 
@@ -49,7 +49,7 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Create graph</h5>
+					<h5 class="modal-title">Create graph</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				</div>
 				<div class="modal-body">
@@ -77,7 +77,7 @@
 						% endfor
 						<hr>
 						<input type="hidden" id="modal-run-input-id" value="${calculation.id}">
-						<button type="submit" id="modal-run-button-submit" class="btn btn-primary">Create</button>
+						<button type="submit" id="modal-run-button-submit" class="btn btn-primary"><i class="fas fa-asterisk fa-spin"></i>Create</button>
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 					</form>
 				</div>
@@ -89,7 +89,7 @@
 		<div class="modal-dialog modal-dialog-centered" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Delete graph</h5>
+					<h5 class="modal-title">Delete graph</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				</div>
 				<div class="modal-body">
@@ -141,6 +141,8 @@
 					"params": params
 				};
 
+				$(event.target).find('i.fa-spin').css('display', 'inline-block');
+
 				$.ajax({
 					url : '/api/run-graph/',
 					type: 'post',
@@ -149,13 +151,17 @@
 					contentType: 'application/json',
 					success: function(resp) {
 						if( resp.error != 0 ) {
-							console.log(resp);
+							$(event.target).find('i.fa-spin').css('display', 'none');
+							console.error('Got error from engine', resp.message);
+							alert(resp.message);
 						} else {
 							window.location.reload(true);
 						}
 					},
 					error: function() {
-						console.log('Error starting calculation.');
+						$(event.target).find('i.fa-spin').css('display', 'none');
+						alert(resp.message);
+						console.error('Error starting calculation.');
 					}
 				});
 			});
