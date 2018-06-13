@@ -23,8 +23,9 @@
 			<div id="graph-row-${graph.id}" data-graph_id="${graph.id}" class="row graph-row align-items-end">
 				<div class="col-sm-8">
 					<div id="graph-${graph.id}" class="graph-wrapper">
-						<h3>${graph.title}</h3>
+						
 						<div class="movie-frame" style="background: ${'#f5fff5' if graph.finished else '#fff5f5'}">
+							<h3>${graph.title} ${'' if graph.finished else '<small style="font-size:45%">IN PROGRESS…</small>'|n}</h3>
 							<i class="far fa-smile fa-9x fa-spin" style=""></i>
 						</div>
 						<%include file="item_images_graph_placeholder.html"/>
@@ -230,10 +231,12 @@
 				% for graph in calculation.graphs:
 					$.get('/api/graph_images_list?last_one=1&graph_id=' + ${graph.id}, items => {
 						if( items.length > 0 ) {
-							$('#graph-${graph.id}').css('text-align', 'left');
-							$('#graph-${graph.id} .movie-frame').html( '<img src="' + items[0].src + '" class="img-fluid">' );
+							$('#graph-${graph.id} .movie-frame i').remove();
+							$('#graph-${graph.id} .movie-frame').append( '<img src="' + items[0].src + '" class="img-fluid">' );
 						} else {
-							$('#graph-${graph.id} .movie-frame i').removeClass('fa-smile fa-spin').addClass('fa-frown');
+							$('#graph-${graph.id} .movie-frame i')
+								.removeClass('fa-smile fa-spin')
+								.addClass('fa-frown');
 						}
 					});
 				% endfor
