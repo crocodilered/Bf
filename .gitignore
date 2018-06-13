@@ -2,10 +2,13 @@
 server.conf
 
 # Users' sessions
-sessions
+sessions/
+
+# Static images
+images/
 
 # Project files
-.idea
+.idea/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
