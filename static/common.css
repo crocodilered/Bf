@@ -53,8 +53,13 @@ h1 { font-size: 3rem; }
 	margin-top: 2rem;
 }
 
-.row-graph img.movie-frame {
-	border: 1px solid #eee;
+.row-graph div.movie-frame {
+	margin: 0 auto;
+	padding: 10px;
+}
+
+.row-graph div.movie-frame h3 {
+	font-size: 1.6rem;
 }
 
 input.has-error {
@@ -64,6 +69,12 @@ input.has-error {
 .graph-toolbar {
 	margin-top: 2rem;
 	text-align: right;
+}
+
+.graph-toolbar i {
+	margin-left: 1rem;
+	cursor: pointer;
+	opacity: .6; 
 }
 
 .row-graph-empty .graph-toolbar {
@@ -76,16 +87,13 @@ input.has-error {
 	}
 }
 
-.graph-toolbar i {
-	margin-left: .4em;
-	cursor: pointer;
-}
+.graph-toolbar .fa-trash { color: #c00; }
 
-.graph-toolbar .fa-trash-alt {
-	color: #c00;
-	opacity: .6;
-}
-
-.graph-toolbar .fa-trash-alt:hover, .graph-toolbar .fa-trash-alt:active {
+.graph-toolbar i:hover, .graph-toolbar i:active {
 	opacity: 1;
+}
+
+button[type=submit] i {
+	margin-right: .2rem;
+	display: none;
 }
