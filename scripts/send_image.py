@@ -10,7 +10,7 @@ try:
     url = 'http://192.168.51.74:8080/api/update-graph/'
     im_s = base64.b64encode(im_b).decode('utf-8')
     json = {
-        'graph_id': 45,
+        'graph_id': 70,
         'image': {
             'width': im.width,
             'height': im.height,
