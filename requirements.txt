@@ -4,3 +4,4 @@ mysqlclient
 bcrypt
 sqlalchemy
 requests
+pillow
