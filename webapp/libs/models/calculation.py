@@ -59,7 +59,7 @@ class Graph(Base):
     updated = Column(DateTime, onupdate=datetime.datetime.now)
     finished = Column(Boolean, default=False)
     params = Column(Text, nullable=False)
-    data = relationship('Data', order_by='Data.point_x, Data.created', cascade='all, delete-orphan')
+    data = relationship('Data', order_by='Data.point_x, Data.created', cascade='all, delete-orphan', lazy='select')
 
     def __init__(self, calculation_id, title, params):
         Base.__init__(self)
@@ -89,6 +89,15 @@ class Graph(Base):
                 r = session.query(Graph).get(id)
             except sqlalchemy.exc.InvalidRequestError:
                 pass
+        return r
+
+    def last_image(self, session):
+        r = None
+        if self.id:
+            r = session.query(Data) \
+                .filter(Data.graph_id == self.id) \
+                .order_by(Data.created.desc()) \
+                .first()
         return r
 
 

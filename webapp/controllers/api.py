@@ -124,17 +124,27 @@ class Api(object):
     @cherrypy.expose
     @cherrypy.tools.json_out()
     @cherrypy.tools.auth()
-    def graph_images_list(self, graph_id):
+    def graph_images_list(self, graph_id, last_one=False):
         """ Вернуть список ИЗОБРАЖЕНИЙ рассчета """
         r = []
-        graph = GraphModel.get(cherrypy.request.sa, graph_id)
+        sess = cherrypy.request.sa
+        graph = GraphModel.get(sess, graph_id)
         if graph:
-            for item in graph.data:
-                r.append({
-                    'src': item.href(),
-                    'w': item.image_width,
-                    'h': item.image_height
-                })
+            if last_one:
+                item = graph.last_image(sess)
+                if item:
+                    r.append({
+                        'src': item.href(),
+                        'w': item.image_width,
+                        'h': item.image_height
+                    })
+            else:
+                for item in graph.data:
+                    r.append({
+                        'src': item.href(),
+                        'w': item.image_width,
+                        'h': item.image_height
+                    })
         return r
 
     @cherrypy.expose

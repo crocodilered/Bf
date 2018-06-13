@@ -27,38 +27,23 @@ h1 { font-size: 3rem; }
 
 .description { margin: 0 0 2rem 0; }
 
-.row-graph {
+.graph-row {
 	border-top: 1px solid #eee;
 	padding: 2rem 0;
 }
 
-.row-graph-empty h4 {
-	opacity: .4;
-}
-
-.row-graph-empty p {
-	font-size: 1.6rem;
-	padding-left: 10px; /* Выравниваем с title в графике */
-	color: #777;
-}
-
-.row-graph-empty p b {
-	color: #000;
-	font-weight: normal;
-}
-
-.row-graph code {
+.graph-row code {
 	color: green;
 	display: block;
 	margin-top: 2rem;
 }
 
-.row-graph div.movie-frame {
+.graph-row div.movie-frame {
 	margin: 0 auto;
 	padding: 10px;
 }
 
-.row-graph div.movie-frame h3 {
+.graph-row div.movie-frame h3 {
 	font-size: 1.6rem;
 }
 
@@ -77,12 +62,18 @@ input.has-error {
 	opacity: .6; 
 }
 
-.row-graph-empty .graph-toolbar {
-	margin-top: 1rem;
+.graph-wrapper {
+	text-align: center;
+}
+
+.graph-wrapper i.far {
+	min-height: 400px; 
+	line-height: 400px;
+	color: #ddd;
 }
 
 @media (min-width: 768px) {
-	.row-graph-empty code {
+	.graph-row-empty code {
 		margin-top: 0rem;
 	}
 }

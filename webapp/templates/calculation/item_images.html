@@ -20,31 +20,20 @@
 		</%def>
 
 		% for graph in calculation.graphs:
-			% if graph.data:
-				<div id="graph-wrapper-${graph.id}" data-graph_id="${graph.id}" class="row row-graph align-items-end">
-					<div class="col-sm-8">
-						<div id="graph-${graph.id}">
-							<div class="movie-frame" style="background: ${'#f5fff5' if graph.finished else '#fff5f5'}">
-								<h3>${graph.title}</h3>
-								<img src="${graph.data[-1].href()}" class="img-fluid">
-							</div>
-							<%include file="item_images_graph_placeholder.html"/>
+			<div id="graph-row-${graph.id}" data-graph_id="${graph.id}" class="row graph-row align-items-end">
+				<div class="col-sm-8">
+					<div id="graph-${graph.id}" class="graph-wrapper">
+						<h3>${graph.title}</h3>
+						<div class="movie-frame" style="background: ${'#f5fff5' if graph.finished else '#fff5f5'}">
+							<i class="far fa-smile fa-9x fa-spin" style=""></i>
 						</div>
-					</div>
-					<div class="col-sm-4">
-						${graph_left_col(graph)}
+						<%include file="item_images_graph_placeholder.html"/>
 					</div>
 				</div>
-			% else:
-				<div id="graph-wrapper-${graph.id}" class="row row-graph row-graph-empty align-items-center">
-					<div class="col-sm-8">
-						<h4>Data for <b>${graph.title}</b> not yet received (${graph.created} started).</h4>
-					</div>
-					<div class="col-sm-4">
-						${graph_left_col(graph)}
-					</div>
+				<div class="col-sm-4">
+					${graph_left_col(graph)}
 				</div>
-			% endif
+			</div>
 		% endfor
 	% else:
 		<div class="alert alert-secondary" role="alert">
@@ -204,7 +193,7 @@
 
 				// Promises!
 				$('#modal-delete').modal('hide');
-				el = $('#graph-wrapper-' + graphId);
+				el = $('#graph-row-' + graphId);
 				el.hide('slow', function(){ el.remove() });
 
 				$.ajax({
@@ -237,6 +226,18 @@
 			$(function() {
 				'use strict';
 
+				// preload images ha-ha
+				% for graph in calculation.graphs:
+					$.get('/api/graph_images_list?last_one=1&graph_id=' + ${graph.id}, items => {
+						if( items.length > 0 ) {
+							$('#graph-${graph.id}').css('text-align', 'left');
+							$('#graph-${graph.id} .movie-frame').html( '<img src="' + items[0].src + '" class="img-fluid">' );
+						} else {
+							$('#graph-${graph.id} .movie-frame i').removeClass('fa-smile fa-spin').addClass('fa-frown');
+						}
+					});
+				% endfor
+
 				var pswp,
 					pswpOptions = {
 						index: 0, // start at first slide
@@ -252,7 +253,7 @@
 					};
 
 				function openPswp(event) {
-					var graphId = $(event.target).parents('.row-graph').data('graph_id');
+					var graphId = $(event.target).parents('.graph-row').data('graph_id');
 
 					$.get('/api/graph_images_list?graph_id=' + graphId, items => {
 						pswp = new PhotoSwipe(
@@ -273,7 +274,7 @@
 					});
 				}
 
-				$('.row-graph .movie-frame img').click(openPswp);
+				$('.graph-row .movie-frame').click(openPswp);
 
 			});
 			
