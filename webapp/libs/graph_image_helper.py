@@ -13,5 +13,5 @@ class GraphImageHelper:
         if data and data.is_image():
             ce_config = cherrypy.tree.apps[''].config['CalculationsEngine']
             images_path = ce_config['ce.images_cache_path']
-            r = os.path.join(images_path, '%020d.png' % int(data.id))
+            r = os.path.join(images_path, '%04d' % int(data.graph_id), '%020d.png' % int(data.id))
         return r
