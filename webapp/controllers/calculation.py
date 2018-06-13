@@ -87,11 +87,11 @@ class Calculation(AbstractController):
     def graph_image(self, data_id):
         """ Вернуть одно изображение ('image/png') """
         data = DataModel.get(cherrypy.request.sa, data_id)
-        image_file = GraphImageHelper.path(data)
+        image_file = GraphImageHelper.get_image_path(data)
         if image_file:
             if not os.path.isfile(image_file):
-                cherrypy.log(image_file)
                 img = PIL.Image.frombytes(data.image_mode, (data.image_width, data.image_height), data.image_data)
+                GraphImageHelper.prepare_graph_path(data.graph_id)
                 img.save(image_file, 'PNG')
             return serve_file(image_file, 'image/png')
         else:
