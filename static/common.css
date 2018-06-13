@@ -41,6 +41,7 @@ h1 { font-size: 3rem; }
 .graph-row div.movie-frame {
 	margin: 0 auto;
 	padding: 10px;
+	cursor: pointer;
 }
 
 .graph-row div.movie-frame h3 {
