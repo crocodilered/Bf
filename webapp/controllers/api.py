@@ -50,7 +50,6 @@ class Api(object):
             'graph_id': graph.id,
             'params': params
         }
-        cherrypy.log(str(ce_params))
         error = self.ERR_OK
         err_message = ''
         try:
@@ -138,7 +137,6 @@ class Api(object):
         error = self.ERR_OK
         data = None
         params = cherrypy.request.json
-
         if 'graph_id' in params:
             sess = cherrypy.request.sa
             graph = GraphModel.get(sess, params['graph_id'])
@@ -158,12 +156,13 @@ class Api(object):
                                      image_height=params['image']['height'],
                                      image_data=base64.b64decode(params['image']['data'].encode('utf-8')))
 
-                elif 'point_x' in params and \
-                        'point_y' in params:
+                elif 'point' in params and \
+                        'x' in params['point'] and \
+                        'y' in params['point']:
                     # Point
                     data = DataModel(graph.id,
-                                     point_x=params['point_x'],
-                                     point_y=params['point_y'])
+                                     point_x=params['point']['x'],
+                                     point_y=params['point']['y'])
 
                 else:
                     # В параметрах передали какую-то муть
