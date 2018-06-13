@@ -121,6 +121,34 @@ class Api(object):
 
         return {'error': error}
 
+    @cherrypy.expose
+    @cherrypy.tools.json_out()
+    @cherrypy.tools.auth()
+    def graph_images_list(self, graph_id):
+        """ Вернуть список ИЗОБРАЖЕНИЙ рассчета """
+        r = []
+        graph = GraphModel.get(cherrypy.request.sa, graph_id)
+        if graph:
+            for item in graph.data:
+                r.append({
+                    'src': item.href(),
+                    'w': item.image_width,
+                    'h': item.image_height
+                })
+        return r
+
+    @cherrypy.expose
+    @cherrypy.tools.json_out()
+    @cherrypy.tools.auth()
+    def graph_points_list(self, graph_id):
+        """ Вернуть список ТОЧЕК рассчета """
+        r = []
+        graph = GraphModel.get(cherrypy.request.sa, graph_id)
+        if graph:
+            for item in graph.data:
+                r.append([item.point_x, item.point_y])
+        return r
+
     # **********************************************************************************************************
     #
     # Non secured methods coz of Engine doesnt support cookies

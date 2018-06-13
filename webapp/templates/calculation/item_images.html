@@ -254,7 +254,7 @@
 				function openPswp(event) {
 					var graphId = $(event.target).parents('.row-graph').data('graph_id');
 
-					$.get('/calculation/graph_images_list?graph_id=' + graphId, items => {
+					$.get('/api/graph_images_list?graph_id=' + graphId, items => {
 						pswp = new PhotoSwipe(
 							$('#graph-' + graphId + ' .pswp')[0], 
 							PhotoSwipeUI_Default, 

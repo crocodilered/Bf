@@ -44,45 +44,6 @@ class Calculation(AbstractController):
         })
 
     @cherrypy.expose
-    @cherrypy.tools.render(template="calculation/graph.html")
-    @cherrypy.tools.auth()
-    def graph(self, graph_id):
-        graph = GraphModel.get(cherrypy.request.sa, graph_id)
-        calculation = CalculationModel.get(cherrypy.request.sa, graph.calculation_id)
-        return self.wrap_template_params({
-            "calculation": calculation,
-            "graph": graph
-        })
-
-    @cherrypy.expose
-    @cherrypy.tools.json_out()
-    @cherrypy.tools.auth()
-    def graph_points_list(self, graph_id):
-        """ Вернуть список ТОЧЕК рассчета """
-        r = []
-        graph = GraphModel.get(cherrypy.request.sa, graph_id)
-        if graph:
-            for item in graph.data:
-                r.append([item.point_x, item.point_y])
-        return r
-
-    @cherrypy.expose
-    @cherrypy.tools.json_out()
-    @cherrypy.tools.auth()
-    def graph_images_list(self, graph_id):
-        """ Вернуть список ИЗОБРАЖЕНИЙ рассчета """
-        r = []
-        graph = GraphModel.get(cherrypy.request.sa, graph_id)
-        if graph:
-            for item in graph.data:
-                r.append({
-                    'src': item.href(),
-                    'w': item.image_width,
-                    'h': item.image_height
-                })
-        return r
-
-    @cherrypy.expose
     @cherrypy.tools.auth()
     def graph_image(self, data_id):
         """ Вернуть одно изображение ('image/png') """
@@ -96,3 +57,4 @@ class Calculation(AbstractController):
             return serve_file(image_file, 'image/png')
         else:
             raise cherrypy.HTTPError(404)
+
