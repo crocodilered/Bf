@@ -1,0 +1,3 @@
+[submodule "static/pswp"]
+	path = static/pswp
+	url = https://github.com/dimsemenov/PhotoSwipe

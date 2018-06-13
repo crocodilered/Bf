@@ -20,9 +20,13 @@
 
 		% for graph in calculation.graphs:
 			% if graph.data:
-				<div id="graph-wrapper-${graph.id}" class="row row-graph align-items-end">
+				<div id="graph-wrapper-${graph.id}" data-graph_id="${graph.id}" class="row row-graph align-items-end">
 					<div class="col-sm-8">
-						<div id="graph-${graph.id}">1</div>
+						<div id="graph-${graph.id}">
+							<h3 style="font-size:1.6rem;">${graph.title}</h3>
+							<img src="${graph.data[-1].href()}" class="img-fluid movie-frame">
+							<%include file="item_images_graph_placeholder.html"/>
+						</div>
 					</div>
 					<div class="col-sm-4">
 						${graph_left_col(graph)}
@@ -49,7 +53,7 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Create graph</h5>
+					<h5 class="modal-title">Create graph</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				</div>
 				<div class="modal-body">
@@ -60,7 +64,6 @@
 								<input class="form-control" type="text" id="modal-run-input-title" required="required">
 							</div>
 						</div>
-
 						<hr>
 						<%
 						 import json
@@ -89,7 +92,7 @@
 		<div class="modal-dialog modal-dialog-centered" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Delete graph</h5>
+					<h5 class="modal-title">Delete graph</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				</div>
 				<div class="modal-body">
@@ -196,52 +199,55 @@
 
 	% if calculation.graphs:
 
-		<!-- HIGH CHATS SECTION -->
-		<script src="https://code.highcharts.com/highcharts.js"></script>
-		<script src="https://code.highcharts.com/modules/data.js"></script>
-		<script src="https://code.highcharts.com/modules/exporting.js"></script>
+		<link href="/i/pswp/dist/photoswipe.css" rel="stylesheet">
+		<link href="/i/pswp/dist/default-skin/default-skin.css" rel="stylesheet">
+		<script src="/i/pswp/dist/photoswipe.min.js"></script>
+		<script src="/i/pswp/dist/photoswipe-ui-default.min.js"></script>
 
 		<script>
 			$(function() {
-				var graphId, title, backgroundColor, enablePolling;
+				'use strict';
 
-				% for graph in calculation.graphs:
-					% if graph.data:
-						graphId = ${graph.id};
-						% if graph.finished:
-							title = '${graph.title}';
-							backgroundColor = '#f5fff5';
-							enablePolling = false;
-						% else:
-							title = '${graph.title} <small style="font-size:45%">IN PROGRESS…</small>';
-							backgroundColor = '#fff5f5';
-							enablePolling = true;
-						% endif
-						Highcharts.chart('graph-${graph.id}', {
-							title: {
-								text: title,
-								align: 'left',
-								style: {fontSize: '1.6rem', fontFamily: '"Roboto Condensed", sans-serif'},
-								useHTML: true
-							},
-							xAxis: { title: null },
-							yAxis: { title: null },
-							legend: { enabled: false },
-							chart: {
-								spacingTop: 20,
-								backgroundColor: backgroundColor,
-								type: 'spline'
-							},
-							data: {
-								firstRowAsNames: false,
-								enablePolling: enablePolling,
-								//dataRefreshRate: 10,
-								rowsURL: window.location.protocol + '//' + window.location.host + '/calculation/g_json/?graph_id=' + graphId
-							}
-						});
-					% endif
-				% endfor
+				var pswp,
+					pswpOptions = {
+						index: 0, // start at first slide
+						escKey: true,
+						preload: true,
+						shareEl: false,
+						fullscreenEl: false,
+						zoomEl: false,
+						history: false,
+						focus: false,
+						showAnimationDuration: 0,
+						hideAnimationDuration: 0
+					};
+
+				function openPswp(event) {
+					var graphId = $(event.target).parents('.row-graph').data('graph_id');
+
+					$.get('/calculation/graph_images_list?graph_id=' + graphId, items => {
+						pswp = new PhotoSwipe(
+							$('#graph-' + graphId + ' .pswp')[0], 
+							PhotoSwipeUI_Default, 
+							items, 
+							pswpOptions
+						);
+
+						pswp.movie = () => { pswp.next(); pswp.timeout = setTimeout(pswp.movie, 100); };
+						pswp.listen( 'stopMovie', () => clearTimeout(pswp.timeout) );
+
+						$(window).keydown(event => { if( event.keyCode == 37 || event.keyCode == 39 ) pswp.shout('stopMovie'); });
+
+						pswp.init();
+						pswp.prev();
+						pswp.movie();
+					});
+				}
+
+				$('.row-graph img.movie-frame').click(openPswp);
+
 			});
+			
 		</script>
 	% endif
 </%block>

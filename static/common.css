@@ -53,6 +53,10 @@ h1 { font-size: 3rem; }
 	margin-top: 2rem;
 }
 
+.row-graph img.movie-frame {
+	border: 1px solid #eee;
+}
+
 input.has-error {
 	border-color: #c00;
 }

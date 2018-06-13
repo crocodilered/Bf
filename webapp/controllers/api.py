@@ -1,3 +1,4 @@
+import base64
 import cherrypy
 import requests
 import datetime
@@ -15,7 +16,8 @@ class Api(object):
 
     ERR_OK = 0
     ERR_BAD_PARAMS = 1
-    ERR_DATA_NOT_FOUND = 2
+    ERR_BAD_DATA = 32
+    ERR_OBJ_NOT_FOUND = 2
     ERR_REMOTE_HOST_SCRIPT_ERROR = 4
     ERR_REMOTE_HOST_HTTP_ERROR = 8
     ERR_REMOTE_HOST_UNREACHABLE = 16
@@ -48,6 +50,7 @@ class Api(object):
             'graph_id': graph.id,
             'params': params
         }
+        cherrypy.log(str(ce_params))
         error = self.ERR_OK
         err_message = ''
         try:
@@ -68,6 +71,14 @@ class Api(object):
 
         return {'error': error, 'message': err_message}
 
+    @cherrypy.expose(['stop-graph'])
+    @cherrypy.tools.json_in()
+    @cherrypy.tools.json_out()
+    @cherrypy.tools.auth()
+    def stop_graph(self):
+        """ STOP """
+        return {'error': 0}
+
     @cherrypy.expose(['delete-graph'])
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out()
@@ -82,7 +93,7 @@ class Api(object):
                 sess.delete(graph)
                 sess.commit()
             else:
-                error = self.ERR_DATA_NOT_FOUND
+                error = self.ERR_OBJ_NOT_FOUND
         else:
             error = self.ERR_BAD_PARAMS
         return {'error': error}
@@ -121,33 +132,55 @@ class Api(object):
     @cherrypy.tools.json_out()
     def update_graph(self):
         """
-        Append point to graph data.
+        Append data to graph. Data can be point(x, y), image(mode, width, height, bytes)
         :return: Json with error code
         """
         error = self.ERR_OK
-        if 'graph_id' in cherrypy.request.json and \
-                'x' in cherrypy.request.json and \
-                'y' in cherrypy.request.json:
+        data = None
+        params = cherrypy.request.json
 
-            graph_id = cherrypy.request.json['graph_id']
+        if 'graph_id' in params:
             sess = cherrypy.request.sa
-
-            # Test if there is graph with given id
-            graph = GraphModel.get(sess, graph_id)
+            graph = GraphModel.get(sess, params['graph_id'])
             if graph:
-                # Append data
-                x = cherrypy.request.json['x']
-                y = cherrypy.request.json['y']
-                data = DataModel(graph_id, x, y)
-                sess.add(data)
-                sess.flush()
-                # Update Graph and  Calculation
-                calc = CalculationModel.get(sess, graph.calculation_id)
-                calc.updated = graph.updated = datetime.datetime.now()
+
+                if 'image' in params and \
+                        'mode' in params['image'] and \
+                        'width' in params['image'] and \
+                        'height' in params['image'] and \
+                        'data' in params['image']:
+                    # Image
+                    # The way to create PIL Image
+                    # im = PIL.Image.frombytes(im_mode, im_size, im_data)
+                    data = DataModel(graph.id,
+                                     image_mode=params['image']['mode'],
+                                     image_width=params['image']['width'],
+                                     image_height=params['image']['height'],
+                                     image_data=base64.b64decode(params['image']['data'].encode('utf-8')))
+
+                elif 'point_x' in params and \
+                        'point_y' in params:
+                    # Point
+                    data = DataModel(graph.id,
+                                     point_x=params['point_x'],
+                                     point_y=params['point_y'])
+
+                else:
+                    # В параметрах передали какую-то муть
+                    error = self.ERR_BAD_DATA
+
+                # Finalize
+                if data is not None:
+                    sess.add(data)
+                    sess.flush()
+                    # Update Graph and  Calculation
+                    calc = CalculationModel.get(sess, graph.calculation_id)
+                    calc.updated = graph.updated = datetime.datetime.now()
             else:
-                error = self.ERR_DATA_NOT_FOUND
+                error = self.ERR_OBJ_NOT_FOUND
         else:
             error = self.ERR_BAD_PARAMS
+
         return {'error': error}
 
     @cherrypy.expose(['finish-graph'])
@@ -166,7 +199,7 @@ class Api(object):
                 graph.updated = datetime.datetime.now()
                 graph.finished = True
             else:
-                error = self.ERR_DATA_NOT_FOUND
+                error = self.ERR_OBJ_NOT_FOUND
         else:
             error = self.ERR_BAD_PARAMS
         return {'error': error}
