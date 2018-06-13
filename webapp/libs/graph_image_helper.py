@@ -1,5 +1,6 @@
 import cherrypy
 import os
+import shutil
 
 
 __all__ = ['GraphImageHelper']
@@ -27,3 +28,10 @@ class GraphImageHelper:
             graph_path = GraphImageHelper.get_graph_path(graph_id)
             if not os.path.isdir(graph_path):
                 os.makedirs(graph_path)
+
+    @staticmethod
+    def clear_graph_path(graph_id):
+        if graph_id:
+            graph_path = GraphImageHelper.get_graph_path(graph_id)
+            if os.path.isdir(graph_path):
+                shutil.rmtree(graph_path)

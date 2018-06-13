@@ -3,6 +3,7 @@ import cherrypy
 import requests
 import datetime
 import json
+from webapp.libs.graph_image_helper import GraphImageHelper
 from webapp.libs.models.calculation import \
     Calculation as CalculationModel, \
     Graph as GraphModel, \
@@ -83,12 +84,14 @@ class Api(object):
     @cherrypy.tools.json_out()
     @cherrypy.tools.auth()
     def delete_graph(self):
+        """ Delete graph and all it's data. """
         error = self.ERR_OK
         if 'graph_id' in cherrypy.request.json:
             sess = cherrypy.request.sa
             graph_id = cherrypy.request.json['graph_id']
             graph = GraphModel.get(sess, graph_id)
             if graph:
+                GraphImageHelper.clear_graph_path(graph_id)
                 sess.delete(graph)
                 sess.commit()
             else:
