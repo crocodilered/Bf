@@ -68,9 +68,6 @@ class Graph(Base):
         self.params = params
         self.finished = False
 
-    def href(self):
-        return '/calculation/graph/?graph_id=%s' % self.id
-
     @staticmethod
     def list(session, calculation_id):
         r = None

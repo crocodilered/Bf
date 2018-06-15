@@ -23,12 +23,13 @@
 			<div id="graph-row-${graph.id}" data-graph_id="${graph.id}" class="row graph-row align-items-end">
 				<div class="col-sm-8">
 					<div id="graph-${graph.id}" class="graph-wrapper">
-						
 						<div class="movie-frame" style="background: ${'#f5fff5' if graph.finished else '#fff5f5'}">
 							<h3>${graph.title} ${'' if graph.finished else '<small style="font-size:45%">IN PROGRESS…</small>'|n}</h3>
-							<i class="far fa-smile fa-9x fa-spin" style=""></i>
+							<video width="710" height="710" controls>
+								<source src="${graph_movies[graph.id]}" />
+								Your browser does not support the video tag.
+							</video>
 						</div>
-						<%include file="item_images_graph_placeholder.html"/>
 					</div>
 				</div>
 				<div class="col-sm-4">
@@ -215,72 +216,4 @@
 
 		});
 	</script>
-
-	% if calculation.graphs:
-
-		<link href="/i/pswp/dist/photoswipe.css" rel="stylesheet">
-		<link href="/i/pswp/dist/default-skin/default-skin.css" rel="stylesheet">
-		<script src="/i/pswp/dist/photoswipe.min.js"></script>
-		<script src="/i/pswp/dist/photoswipe-ui-default.min.js"></script>
-
-		<script>
-			$(function() {
-				'use strict';
-
-				// preload images ha-ha
-				% for graph in calculation.graphs:
-					$.get('/api/graph_images_list?last_one=1&graph_id=' + ${graph.id}, items => {
-						if( items.length > 0 ) {
-							$('#graph-${graph.id} .movie-frame i').remove();
-							$('#graph-${graph.id} .movie-frame').append( '<img src="' + items[0].src + '" class="img-fluid">' );
-						} else {
-							$('#graph-${graph.id} .movie-frame i')
-								.removeClass('fa-smile fa-spin')
-								.addClass('fa-frown');
-						}
-					});
-				% endfor
-
-				var pswp,
-					pswpOptions = {
-						index: 0, // start at first slide
-						escKey: true,
-						preload: true,
-						shareEl: false,
-						fullscreenEl: false,
-						zoomEl: false,
-						history: false,
-						focus: false,
-						showAnimationDuration: 0,
-						hideAnimationDuration: 0
-					};
-
-				function openPswp(event) {
-					var graphId = $(event.target).parents('.graph-row').data('graph_id');
-
-					$.get('/api/graph_images_list?graph_id=' + graphId, items => {
-						pswp = new PhotoSwipe(
-							$('#graph-' + graphId + ' .pswp')[0], 
-							PhotoSwipeUI_Default, 
-							items, 
-							pswpOptions
-						);
-
-						pswp.movie = () => { pswp.next(); pswp.timeout = setTimeout(pswp.movie, 100); };
-						pswp.listen( 'stopMovie', () => clearTimeout(pswp.timeout) );
-
-						$(window).keydown(event => { if( event.keyCode == 37 || event.keyCode == 39 ) pswp.shout('stopMovie'); });
-
-						pswp.init();
-						pswp.prev();
-						pswp.movie();
-					});
-				}
-
-				$('.graph-row .movie-frame').click(openPswp);
-
-			});
-			
-		</script>
-	% endif
 </%block>

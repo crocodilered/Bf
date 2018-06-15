@@ -67,12 +67,6 @@ input.has-error {
 	text-align: center;
 }
 
-.graph-wrapper i.far {
-	min-height: 400px; 
-	line-height: 400px;
-	color: #ddd;
-}
-
 @media (min-width: 768px) {
 	.graph-row-empty code {
 		margin-top: 0rem;

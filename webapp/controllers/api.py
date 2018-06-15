@@ -1,3 +1,4 @@
+from PIL import Image
 import base64
 import cherrypy
 import requests
@@ -189,13 +190,15 @@ class Api(object):
                         'height' in params['image'] and \
                         'data' in params['image']:
                     # Image
-                    # The way to create PIL Image
-                    # im = PIL.Image.frombytes(im_mode, im_size, im_data)
+                    image = Image.frombytes(params['image']['mode'],
+                                            (params['image']['width'], params['image']['height']),
+                                            base64.b64decode(params['image']['data'].encode('utf-8')))
+                    image = image.resize((730, 730), Image.BICUBIC)
                     data = DataModel(graph.id,
-                                     image_mode=params['image']['mode'],
-                                     image_width=params['image']['width'],
-                                     image_height=params['image']['height'],
-                                     image_data=base64.b64decode(params['image']['data'].encode('utf-8')))
+                                     image_mode=image.mode,
+                                     image_width=image.width,
+                                     image_height=image.height,
+                                     image_data=image.tobytes())
 
                 elif 'point' in params and \
                         'x' in params['point'] and \
@@ -216,6 +219,14 @@ class Api(object):
                     # Update Graph and  Calculation
                     calc = CalculationModel.get(sess, graph.calculation_id)
                     calc.updated = graph.updated = datetime.datetime.now()
+                    # save image if necessary
+                    if 'image' in locals():
+                        image_file = GraphImageHelper.get_image_path(data)
+                        if image_file:
+                            GraphImageHelper.prepare_graph_path(data.graph_id)
+                            image.save(image_file, 'PNG')
+                            # publish event to let plugin know when to generate video
+                            cherrypy.engine.publish('update-graph-image', data.graph_id)
             else:
                 error = self.ERR_OBJ_NOT_FOUND
         else:
@@ -238,6 +249,7 @@ class Api(object):
             if graph:
                 graph.updated = datetime.datetime.now()
                 graph.finished = True
+                cherrypy.engine.publish('finish-graph', graph.id)
             else:
                 error = self.ERR_OBJ_NOT_FOUND
         else:
