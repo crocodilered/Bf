@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `calculation` (
   `params_template` text,
   `updated` timestamp DEFAULT CURRENT_TIMESTAMP COMMENT 'Копия graph.updated',
   PRIMARY KEY (`calculation_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Тип рассчета';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='Тип рассчета';
 
 -- Дамп данных таблицы bf.calculation: ~2 rows (приблизительно)
 /*!40000 ALTER TABLE `calculation` DISABLE KEYS */;
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `data` (
   `created` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`data_id`),
   KEY `graph_id` (`graph_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=81 DEFAULT CHARSET=utf8 COMMENT='Данные для графиков.';
+) ENGINE=InnoDB AUTO_INCREMENT=81 DEFAULT CHARSET=utf8mb4 COMMENT='Данные для графиков.';
 
 -- Дамп данных таблицы bf.data: ~8 rows (приблизительно)
 /*!40000 ALTER TABLE `data` DISABLE KEYS */;
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `graph` (
   `created` timestamp,
   `updated` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`graph_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8 COMMENT='Список графиков';
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COMMENT='Список графиков';
 
 -- Дамп данных таблицы bf.graph: ~1 rows (приблизительно)
 /*!40000 ALTER TABLE `graph` DISABLE KEYS */;
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `email` (`email`),
   KEY `token` (`token`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
 -- Дамп данных таблицы bf.user: ~1 rows (приблизительно)
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
