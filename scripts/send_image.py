@@ -7,10 +7,10 @@ im = Image.open('im.png')
 im_b = im.tobytes()
 
 try:
-    url = 'http://192.168.51.74:8080/api/update-graph/'
+    url = 'http://127.0.0.1/api/update-graph/'
     im_s = base64.b64encode(im_b).decode('utf-8')
     json = {
-        'graph_id': 70,
+        'graph_id': 1,
         'image': {
             'width': im.width,
             'height': im.height,
