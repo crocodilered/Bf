@@ -92,9 +92,9 @@ class Api(object):
             graph_id = cherrypy.request.json['graph_id']
             graph = GraphModel.get(sess, graph_id)
             if graph:
-                GraphImageHelper.clear_graph_path(graph_id)
                 sess.delete(graph)
                 sess.commit()
+                GraphImageHelper.clear_graph_path(graph_id)
             else:
                 error = self.ERR_OBJ_NOT_FOUND
         else:
@@ -195,10 +195,8 @@ class Api(object):
                                             base64.b64decode(params['image']['data'].encode('utf-8')))
                     image = image.resize((730, 730), Image.BICUBIC)
                     data = DataModel(graph.id,
-                                     image_mode=image.mode,
                                      image_width=image.width,
-                                     image_height=image.height,
-                                     image_data=image.tobytes())
+                                     image_height=image.height)
 
                 elif 'point' in params and \
                         'x' in params['point'] and \
@@ -221,10 +219,10 @@ class Api(object):
                     calc.updated = graph.updated = datetime.datetime.now()
                     # save image if necessary
                     if 'image' in locals():
-                        image_file = GraphImageHelper.get_image_path(data)
-                        if image_file:
+                        image_file_path = GraphImageHelper.get_image_path(data)
+                        if image_file_path:
                             GraphImageHelper.prepare_graph_path(data.graph_id)
-                            image.save(image_file, 'PNG')
+                            image.save(image_file_path, 'PNG')
                             # publish event to let plugin know when to generate video
                             cherrypy.engine.publish('update-graph-image', data.graph_id)
             else:

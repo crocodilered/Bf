@@ -59,7 +59,7 @@ class Graph(Base):
     updated = Column(DateTime, onupdate=datetime.datetime.now)
     finished = Column(Boolean, default=False)
     params = Column(Text, nullable=False)
-    data = relationship('Data', order_by='Data.point_x, Data.created', cascade='all, delete-orphan', lazy='select')
+    data = relationship('Data', order_by='Data.point_x, Data.created', cascade='delete', lazy='select')
 
     def __init__(self, calculation_id, title, params):
         Base.__init__(self)
@@ -110,26 +110,22 @@ class Data(Base):
     point_y = Column(Float)
 
     # Image
-    image_mode = Column(String(10))
     image_width = Column(Integer)
     image_height = Column(Integer)
-    image_data = Column(LargeBinary)
 
     def __init__(self, graph_id,
                  point_x=None, point_y=None,
-                 image_mode=None, image_width=None, image_height=None, image_data=None):
+                 image_width=None, image_height=None):
         Base.__init__(self)
         # TODO: Need to verify data types and constraints
         self.graph_id = graph_id
         self.point_x = point_x
         self.point_y = point_y
-        self.image_mode = image_mode
         self.image_width = image_width
         self.image_height = image_height
-        self.image_data = image_data
 
     def is_image(self):
-        return self.image_mode and self.image_width and self.image_height and self.image_data
+        return self.image_width and self.image_height
 
     def href(self):
         return '/calculation/graph_image/?data_id=%s' % self.id if self.is_image() else None

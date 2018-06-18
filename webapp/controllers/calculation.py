@@ -51,14 +51,6 @@ class Calculation(AbstractController):
         data = DataModel.get(cherrypy.request.sa, data_id)
         image_file = GraphImageHelper.get_image_path(data)
         if image_file:
-            """
-            This block is not required coz of we saved image file while saving data to database
-            if not os.path.isfile(image_file):
-                image = PIL.Image.frombytes(data.image_mode, (data.image_width, data.image_height), data.image_data)
-                GraphImageHelper.prepare_graph_path(data.graph_id)
-                image = image.resize((730, 730), Image.BICUBIC)
-                image.save(image_file, 'PNG')
-            """
             return serve_file(image_file, 'image/png')
         else:
             raise cherrypy.HTTPError(404)

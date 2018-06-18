@@ -45,7 +45,7 @@ class GraphImageHelper:
         if graph_id:
             graph_path = GraphImageHelper.get_graph_path(graph_id)
             if os.path.isdir(graph_path):
-                shutil.rmtree(graph_path)
+                shutil.rmtree(graph_path, ignore_errors=True)
 
     @staticmethod
     def clear_graph_movie(graph_id):
