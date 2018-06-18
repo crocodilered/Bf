@@ -30,6 +30,7 @@ class VideoGeneratorPlugin(plugins.SimplePlugin):
     def stop(self):
         """ Stopping plugin """
         self.bus.unsubscribe('update-graph-image', self.update_graph_image)
+        self.bus.unsubscribe('finish-graph', self.finish_graph)
         self.bus.log('VideoGenerator plugin stopped.')
 
     def update_graph_image(self, graph_id):
@@ -40,6 +41,7 @@ class VideoGeneratorPlugin(plugins.SimplePlugin):
                 'output_file_path': GraphImageHelper.get_movie_path(graph_id)}
         if self.processing_graphs[graph_id]['updates_count'] % self.ticks_to_generate_movie:
             self.generate_movie(graph_id)
+        self.processing_graphs[graph_id]['updates_count'] += 1
 
     def finish_graph(self, graph_id):
         if graph_id in self.processing_graphs:
