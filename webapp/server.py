@@ -10,11 +10,11 @@ from webapp.libs.tools.satool import SaTool
 
 def error_page(status, message, traceback, version):
     if cherrypy.response.status == 401:
-        s = open('templates/errors/401.html', 'r', encoding='UTF-8').read()
+        s = open('webapp/templates/errors/401.html', 'r', encoding='UTF-8').read()
         return_url = '%s?%s' % (cherrypy.request.path_info, cherrypy.request.query_string)
         return s % return_url.replace('?', '%3F').replace('/', '%2F')
     elif cherrypy.response.status == 404:
-        return open('templates/errors/404.html', 'rb')
+        return open('webapp/templates/errors/404.html', 'rb')
 
 
 cherrypy.tools.sa = SaTool()
