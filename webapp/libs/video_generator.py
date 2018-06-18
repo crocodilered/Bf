@@ -13,7 +13,8 @@ class VideoGenerator:
 
     @staticmethod
     def run(images_dir_path, output_file_path, frame_rate, frame_size):
-        output_file_path_temp = 'temp.' + output_file_path
+        images_dir_path_tokens = images_dir_path.split('.mp4')
+        output_file_path_temp = images_dir_path_tokens[0] + '_temp.mp4'
         cmd = ['ffmpeg',
                '-y',
                '-pattern_type', 'glob',
@@ -26,7 +27,6 @@ class VideoGenerator:
                '-pix_fmt', 'yuv420p',
                output_file_path_temp]
         run(cmd)
-
         if os.path.isfile(output_file_path):
             os.remove(output_file_path)
         os.rename(output_file_path_temp, output_file_path)
