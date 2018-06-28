@@ -55,6 +55,9 @@ input.has-error {
 .graph-toolbar {
 	margin-top: 2rem;
 	text-align: right;
+	background: #eee;
+	padding: 10px;
+	border-radius: 5px;
 }
 
 .graph-toolbar i {
