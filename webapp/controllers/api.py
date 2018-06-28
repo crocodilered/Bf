@@ -216,8 +216,9 @@ class Api(object):
                     sess.flush()
                     # Update Graph and  Calculation
                     calc = CalculationModel.get(sess, graph.calculation_id)
+                    graph.points_count += 1
                     calc.updated = graph.updated = datetime.datetime.now()
-                    # save image if necessary
+                    # Save image if necessary
                     if 'image' in locals():
                         image_file_path = GraphImageHelper.get_image_path(data)
                         if image_file_path:

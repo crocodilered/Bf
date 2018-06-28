@@ -11,27 +11,42 @@
 
 	% if calculation.graphs:
 
-		<%def name="graph_left_col(g)">
-			<code class="d-none d-md-block">${g.params}</code>
+		<%def name="graph_col(g)">
+			<code class="d-none d-md-block">
+				<big>Params:</b></big><br>
+				% for key in graph_params:
+					${key}: ${graph_params[key]}<br>
+				% endfor
+			</code>
+			<hr>
 			<div class="graph-toolbar">
-				<!--i data-toggle="modal" data-target="#modal-stop" data-graph="${g.id}" class="fas fa-stop-circle fa-2x"></i-->
 				<i data-toggle="modal" data-target="#modal-delete" data-graph="${g.id}" class="fas fa-trash fa-2x"></i>
 			</div>
 		</%def>
 
 		% for graph in calculation.graphs:
+			<%
+				import json
+				graph_params = json.loads(graph.params.replace('\'', '"'))
+				points_total = graph_params['n_samples']
+			%>
 			<div id="graph-row-${graph.id}" class="row graph-row align-items-end">
 				<div class="col-sm-8">
 					<div id="graph-${graph.id}" class="graph-wrapper" style="padding:10px; background: ${'#f5fff5' if graph.finished else '#fff5f5'}">
-						<h3>${graph.title} ${'' if graph.finished else '<small style="font-size:45%">IN PROGRESS…</small>'|n}</h3>
-						<video width="710" height="710" controls>
+						<h3>
+							${graph.title}
+							% if not graph.finished:
+								<small style="font-size:45%">Points: ${graph.points_count} of ${points_total} calculated.</small>
+							% endif
+						</h3>
+						<video width="710" height="710" controls loop>
 							<source src="${graph_movies[graph.id]}" />
 							Your browser does not support the video tag.
 						</video>
 					</div>
 				</div>
 				<div class="col-sm-4">
-					${graph_left_col(graph)}
+					${graph_col(graph)}
 				</div>
 			</div>
 		% endfor

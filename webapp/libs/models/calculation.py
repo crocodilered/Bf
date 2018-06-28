@@ -59,6 +59,7 @@ class Graph(Base):
     updated = Column(DateTime, onupdate=datetime.datetime.now)
     finished = Column(Boolean, default=False)
     params = Column(Text, nullable=False)
+    points_count = Column(Integer)  # Count of data records (cache)
     data = relationship('Data', order_by='Data.point_x, Data.created', cascade='delete', lazy='select')
 
     def __init__(self, calculation_id, title, params):
@@ -66,6 +67,7 @@ class Graph(Base):
         self.calculation_id = calculation_id
         self.title = title
         self.params = params
+        self.points_count = 0
         self.finished = False
 
     @staticmethod
